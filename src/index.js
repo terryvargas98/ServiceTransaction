@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 // Configuration
 const port = process.env.port || 3000;
+const host = '0.0.0.0';
 
 
 // Routes
@@ -26,9 +27,10 @@ app.use('/api/transaction', transactionRouter);
 
 
 
-app.listen(port, () => {
+app.listen(port, host, () => {
     console.log(`Server run in port ${port}`);
 
 });
+
 
 module.exports = app;
