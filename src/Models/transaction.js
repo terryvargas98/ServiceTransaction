@@ -17,9 +17,11 @@ const SchemaTransaction = new Schema({
     movement: {
         type: String,
         require: true
-    }
-}, {
-    timestamps: true,
+    },
+    Created: {
+        type: Date,
+        required: true
+    },
 })
 
 module.exports = model('transaction', SchemaTransaction);

@@ -17,6 +17,7 @@
         "mongoose": "^5.10.6",
         "mongoose-schema-jsonschema": "^1.4.4",
         "morgan": "^1.10.0",
+        "node-fetch": "^2.6.1",
         "xmlhttprequest": "^1.8.0"
     }
 }

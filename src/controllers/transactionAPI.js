@@ -14,12 +14,10 @@ exports.deposit = function(req, res) {
         const data = transactionService.deposit(params);
         res.status(200).json({ account_id: data.account_id, balance: data.balance, operation: data.operation });
     } catch (error) {
-        /* console.log("ERROR: ", error);
-        errorCode = error.errorCode || 403;
-        res.status(errorCode).json(error); */
+
         res.status(403).send({ message: error });
     }
-    res.end();
+
 }
 
 /**
@@ -36,19 +34,34 @@ exports.retirement = function(req, res) {
     } catch (error) {
         res.status(400).json({ message: error });
     }
-    res.end();
+
 }
 
 exports.listTransaction = async function(req, res) {
 
-    const myJson = await transactionService.listTranscationes(req.params.account_id);
-
     try {
-
+        const myJson = await transactionService.listTranscationes(req.params.account_id);
         res.status(200).json(myJson);
     } catch (error) {
         res.status(400).json({ message: error });
     }
     res.end();
+
+}
+
+exports.LastTransaction = async function(req, res) {
+
+    try {
+
+        const Transactions = await transactionService.listTranscationes(req.params.account_id);
+
+        const LastTransaction = Transactions.reduce((acum, el) => acum.Created > el.Created ? acum : el);
+
+        res.status(200).json({ operation: LastTransaction.operation, amount: LastTransaction.amount, numberId: LastTransaction.account_id });
+
+    } catch (err) {
+        res.status(400).json({ message: err });
+
+    }
 
 }

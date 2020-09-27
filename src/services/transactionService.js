@@ -7,62 +7,65 @@ const { array_jsonSchema } = require('mongoose-schema-jsonschema/lib/types');
 const { get } = require('../routes/transaction');
 const mongoose = require('mongoose-schema-jsonschema')();
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-
-
+const fetch = require('node-fetch');
+const util = require('../services/util');
 
 exports.deposit = function(params) {
-    try {
-        if (!this.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST'); }
+    if (!this.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST'); }
 
-        const transaction = new Transaction({
-            account_id: params.account_id,
-            amount: params.amount,
-            operation: 0,
-            movement: 'DEPOSIT'
-        });
+    const transaction = new Transaction({
+        account_id: params.account_id,
+        amount: params.amount,
+        operation: 0,
+        movement: 'DEPOSIT',
+        Created: new Date()
+    });
 
-        transaction.save();
+    transaction.save();
 
-        var balance = GetBalance(params.account_id);
-
-        const BalanceActual = parseInt(balance.amount) + parseInt(transaction.amount);
+    var balance = GetBalance(params.account_id);
 
 
+    util.update(params.account_id, params.amount, 0);
 
-        const response = { account_id: transaction.account_id, balance: BalanceActual, operation: transaction.operation };
-        return response;
-    } catch (error) {
-        throw error;
-    }
+    const BalanceActual = parseInt(balance.amount) + parseInt(transaction.amount);
+
+
+    const response = { account_id: transaction.account_id, balance: BalanceActual, operation: transaction.operation };
+    return response;
+
+
 }
 
 exports.retirement = function(params) {
+    var balanceGetUrl = GetBalance(params.account_id);
     try {
+
         if (!this.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
-        // trae los datos del microservicio cuentas
-        //let account = await microserviceAccount.findOne({account_id: params.account_id});
-        /* let account = ACCOUNT.find(a => a.account_id == params.account_id);
-         */
-        /* if (account == null) throw errors.errorFormat('FORBIDDEN'); */
-        if (!this.isAmountRetirementMinorBalance(params.amount, account.balance)) { throw { message: 'insufficient balance' } }
+
+        if (!this.isAmountRetirementMinorBalance(params.amount, balanceGetUrl.amount)) { throw { message: 'insufficient balance' } }
 
         const transaction = new Transaction({
             account_id: params.account_id,
             amount: params.amount,
             operation: 1,
-            movement: 'RETIREMENT'
+            movement: 'RETIREMENT',
+            Created: new Date()
         });
         transaction.save();
 
-        var balance = GetBalance(params.account_id);
-
-        const BalanceActual = parseInt(balance.amount) - parseInt(transaction.amount);
+        util.update(params.account_id, params.amount, 1);
 
 
-        const response = { account_id: transaction.account_id, balance: account.balance, operation: transaction.operation };
+
+
+        const BalanceActual = parseInt(balanceGetUrl.amount) - parseInt(transaction.amount);
+
+
+        const response = { account_id: transaction.account_id, balance: BalanceActual, operation: transaction.operation };
         return response;
     } catch (error) {
-        throw error;
+        throw error.message;
     }
 }
 
@@ -75,23 +78,36 @@ exports.empty = function(amount, account_id) {
 }
 
 exports.listTranscationes = async function(account_id) {
+    try {
 
+        const arreglo = await transaction.find({ account_id: account_id }).exec();
 
-    const arreglo = await transaction.find({ account_id: account_id }).exec();
+        return arreglo;
 
-    return arreglo;
+    } catch (error) {
+        throw error.message;
+    }
 
 }
 
+
 function Get(url) {
-    var Httpreq = new XMLHttpRequest(); // a new request
-    Httpreq.open("GET", url, false);
-    Httpreq.send(null);
-    return Httpreq.responseText;
+    try {
+        var Httpreq = new XMLHttpRequest(); // a new request
+        Httpreq.open("GET", url, false);
+        Httpreq.send(null);
+        return Httpreq.responseText;
+    } catch (error) {
+        throw error.message;
+    }
 }
 
 function GetBalance(param) {
-    let account = "https://apigesbanc.herokuapp.com/api/v1/checkbalance/" + param;
-    var balance = JSON.parse(Get(account));
-    return balance;
+    try {
+        let account = "https://apigesbanc.herokuapp.com/api/v1/checkbalance/" + param;
+        var balance = JSON.parse(Get(account));
+        return balance;
+    } catch (err) {
+        throw err.message;
+    }
 }
