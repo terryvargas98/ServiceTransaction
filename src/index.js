@@ -25,8 +25,6 @@ const transactionRouter = require('./routes/transaction');
 // Functions
 app.use('/api/transaction', transactionRouter);
 
-
-
 app.set('port', (process.env.PORT || 5000));
 app.get('/', function(request, response) {
     var result = 'App is running'
