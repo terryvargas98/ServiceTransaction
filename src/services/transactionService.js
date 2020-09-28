@@ -42,10 +42,10 @@ exports.retirement = async function(params) {
         });
         transaction.save();
 
-        const balanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
+        const balanceActual = parseInt(account.amount) - parseInt(transaction.amount);
         let accountUpdated = await util.update({ amount: transaction.amount, operacion: transaction.operation }, params.account_id);
 
-        const response = { account_id: transaction.account_id, balance: transaction.amount, operation: transaction.operation };
+        const response = { account_id: transaction.account_id, balance: balanceActual, operation: 1 };
         return response;
     } catch (error) {
         throw error.message;
