@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Configuration
-const port = process.env.port || 3000;
+//const port = process.env.port || 3000;
 const host = '0.0.0.0';
 
 
@@ -24,8 +24,6 @@ const transactionRouter = require('./routes/transaction');
 
 // Functions
 app.use('/api/transaction', transactionRouter);
-
-
 
 app.set('port', (process.env.PORT || 5000));
 app.get('/', function(request, response) {
