@@ -34,7 +34,7 @@ describe('Deposit', () => {
 
 describe('Retirement', () => {
     it('Should retirement ok', async () => {
-        let params = { account_id: 98787656789876, amount: 1000, operation: 1 };
+        let params = { account_id: 98787656789876, amount: 9000};
         let balanceBeforeRetirement = util.getBalance(params.account_id);
         let amountToRetirement = params.amount;
 

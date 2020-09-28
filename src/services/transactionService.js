@@ -17,7 +17,7 @@ exports.deposit = async function(params) {
 
         var balance = util.getBalance(params.account_id);
         
-        const BalanceActual = parseFloat(balance.amount) + parseFloat(transaction.amount);
+        const balanceActual = parseFloat(balance.amount) + parseFloat(transaction.amount);
         let accountUpdated = await util.update(params, params.account_id);
 
         const response = { account_id: transaction.account_id, balance: transaction.amount, operation: transaction.operation };
@@ -31,8 +31,7 @@ exports.retirement = async function(params) {
     try {
         if (!util.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
         var account = util.getBalance(params.account_id);
-        console.log(account);
-        if (!this.isAmountRetirementMinorBalance(params.amount, account.amount)) { throw { message: 'insufficient balance' } }
+        if (!this.isAmountRetirementMinorBalance(params.amount, account.amount)) { throw errors.errorFormat('INSUFFICIENT_BALANCE'); }
 
         const transaction = new Transaction({
             account_id: params.account_id,
@@ -42,10 +41,9 @@ exports.retirement = async function(params) {
             Created: new Date()
         });
         transaction.save();
-
+        
+        const balanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
         let accountUpdated = await util.update({amount: transaction.amount, operacion: transaction.operation}, params.account_id);
-
-        const BalanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
 
         const response = { account_id: transaction.account_id, balance: transaction.amount, operation: transaction.operation };
         return response;

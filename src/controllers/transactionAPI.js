@@ -24,14 +24,13 @@ exports.deposit = async function(req, res) {
  */
 exports.retirement = async function(req, res) {
     const params = req.body;
-    console.log(params);
     try {
         const data = await transactionService.retirement(params);
-        console.log(data);
-        res.status(200).json(data);
+        res.json(data);
     } catch (error) {
-        res.status(400).json(error);
+        res.status(500).send(error);
     }
+    res.end();
 }
 
 exports.listTransaction = async function(req, res) {
