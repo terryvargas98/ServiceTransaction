@@ -31,7 +31,7 @@ exports.retirement = async function(params) {
     try {
         if (!util.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
         var account = util.getBalance(params.account_id);
-        if (!this.isAmountRetirementMinorBalance(parseFloat(params.amount), parseFloat(account.amount))) { throw errors.errorFormat('INSUFFICIENT_BALANCE'); }
+        if (!this.isAmountRetirementMinorBalance(parseFloat(params.amount), parseFloat(account.amount))) { throw errors.errorFormat('INSUFFICIENT_BALANCES'); }
 
         const transaction = new Transaction({
             account_id: params.account_id,
