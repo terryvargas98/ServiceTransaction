@@ -43,7 +43,7 @@ exports.retirement = function(params) {
 
         if (!this.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
 
-        if (!this.isAmountRetirementMinorBalance(params.amount, balanceGetUrl.amount)) { throw { message: 'insufficient balance' } }
+        if (!this.isAmountRetirementMinorBalance(params.amount, parseInt(balanceGetUrl.amount))) { throw { message: 'insufficient balance' } }
 
         const transaction = new Transaction({
             account_id: params.account_id,
@@ -55,9 +55,6 @@ exports.retirement = function(params) {
         transaction.save();
 
         util.update(params.account_id, params.amount, 1);
-
-
-
 
         const BalanceActual = parseInt(balanceGetUrl.amount) - parseInt(transaction.amount);
 
