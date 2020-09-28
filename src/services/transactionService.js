@@ -31,6 +31,7 @@ exports.retirement = async function(params) {
     try {
         if (!util.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
         var account = util.getBalance(params.account_id);
+        console.log(account);
         if (!this.isAmountRetirementMinorBalance(params.amount, account.amount)) { throw { message: 'insufficient balance' } }
 
         const transaction = new Transaction({

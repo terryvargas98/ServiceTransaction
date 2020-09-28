@@ -22,10 +22,12 @@ exports.deposit = async function(req, res) {
  * @response {account_id: 15478qw8wer, balance: 110} res
  * @param {operation: {0: deposit, 1: retirement}} 
  */
-exports.retirement = function(req, res) {
+exports.retirement = async function(req, res) {
     const params = req.body;
+    console.log(params);
     try {
-        const data = transactionService.retirement(params);
+        const data = await transactionService.retirement(params);
+        console.log(data);
         res.status(200).json(data);
     } catch (error) {
         res.status(400).json(error);
