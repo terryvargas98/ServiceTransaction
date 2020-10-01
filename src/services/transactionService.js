@@ -16,11 +16,11 @@ exports.deposit = async function(params) {
         transaction.save();
 
         var balance = util.getBalance(params.account_id);
-        
+
         const balanceActual = parseFloat(balance.amount) + parseFloat(transaction.amount);
         let accountUpdated = await util.update(params, params.account_id);
 
-        const response = { account_id: transaction.account_id, balance: transaction.amount, operation: transaction.operation };
+        const response = { account_id: transaction.account_id, balance: balanceActual, operation: transaction.operation };
         return response;
     } catch (error) {
         throw error;
@@ -31,7 +31,7 @@ exports.retirement = async function(params) {
     try {
         if (!util.empty(params.account_id, params.amount)) { throw errors.errorFormat('BAD_REQUEST') }
         var account = util.getBalance(params.account_id);
-        if (!this.isAmountRetirementMinorBalance(params.amount, account.amount)) { throw errors.errorFormat('INSUFFICIENT_BALANCE'); }
+        if (!this.isAmountRetirementMinorBalance(parseFloat(params.amount), parseFloat(account.amount))) { throw errors.errorFormat('INSUFFICIENT_BALANCES'); }
 
         const transaction = new Transaction({
             account_id: params.account_id,
@@ -41,11 +41,11 @@ exports.retirement = async function(params) {
             Created: new Date()
         });
         transaction.save();
-        
-        const balanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
-        let accountUpdated = await util.update({amount: transaction.amount, operacion: transaction.operation}, params.account_id);
 
-        const response = { account_id: transaction.account_id, balance: transaction.amount, operation: transaction.operation };
+        const balanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
+        let accountUpdated = await util.update({ amount: transaction.amount, operacion: transaction.operation }, params.account_id);
+
+        const response = { account_id: transaction.account_id, balance: balanceActual, operation: 1 };
         return response;
     } catch (error) {
         throw error.message;
