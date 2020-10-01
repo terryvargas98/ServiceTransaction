@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
+const util = require('./services/util');
+const jwt = require('jsonwebtoken');
 require('./config/database');
 
 
@@ -16,16 +18,21 @@ app.use(bodyParser.json());
 // Configuration
 //const port = process.env.port || 3000;
 const host = '0.0.0.0';
+app.set('port', (process.env.PORT || 5000));
 
 
 // Routes
 const transactionRouter = require('./routes/transaction');
-
+const ensureToken = util.getToken;
 
 // Functions
-app.use('/api/transaction', transactionRouter);
+app.get('/api/transaction/token', (req, res) => {
+    const client = req.body;
+    const token = jwt.sign({client}, `${process.env.KEY}`);
+    res.json(token);
+})
+app.use('/api/transaction', ensureToken, transactionRouter);
 
-app.set('port', (process.env.PORT || 5000));
 app.get('/', function(request, response) {
     var result = 'App is running'
     response.send(result);

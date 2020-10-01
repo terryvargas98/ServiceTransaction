@@ -1,6 +1,17 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const fetch = require('node-fetch');
+//const jwt = require('jsonwebtoken');
 
+exports.getToken = function ensureToken(req, res, next) {
+    const bearerHeader = req.headers['authorization'];
+    if (typeof bearerHeader != 'undefined') {
+        const bearerToken = bearerHeader.split(" ")[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
 
 function get (url, method) {
     var Httpreq = new XMLHttpRequest(); // a new request
