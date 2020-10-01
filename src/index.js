@@ -23,7 +23,7 @@ app.set('port', (process.env.PORT || 5000));
 
 // Routes
 const transactionRouter = require('./routes/transaction');
-const ensureToken = util.getToken;
+const ensureToken = util.validatedToken;
 
 // Functions
 app.get('/api/transaction/token', (req, res) => {
