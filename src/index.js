@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
+const pug = require('pug');
 require('./config/database');
 
 
@@ -24,8 +25,8 @@ const transactionRouter = require('./routes/transaction');
 
 // Functions
 app.use('/api/transaction', transactionRouter);
-
-app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'pug');
+app.set('port', (process.env.PORT || 4000));
 app.get('/', function(request, response) {
     var result = 'App is running'
     response.send(result);
