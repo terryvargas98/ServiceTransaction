@@ -1,5 +1,5 @@
 const transactionService = require('../services/transactionService');
-
+const util = require('../services/util');
 /**
  * 
  * @request {account_id, amountToDeposit} req 
@@ -50,5 +50,14 @@ exports.LastTransaction = async function(req, res) {
         res.status(200).json({ operation: LastTransaction.operation, amount: LastTransaction.amount, numberId: LastTransaction.account_id });
     } catch (err) {
         res.status(400).json(error);
+    }
+}
+exports.getToken = function(req, res) {
+    const params = req.body;
+    try {
+        const data = util.createToken(params);
+        res.json({ token: data });
+    } catch (error) {
+        throw error;
     }
 }

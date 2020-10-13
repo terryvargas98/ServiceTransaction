@@ -19,7 +19,8 @@ exports.deposit = async function(params) {
 
         const balanceActual = parseFloat(balance.amount) + parseFloat(transaction.amount);
         let accountUpdated = await util.update(params, params.account_id);
-
+        let token = await util.getToken();
+        let res = await util.log({ accountId: transaction.account_id, event: transaction.movement }, token);
         const response = { account_id: transaction.account_id, balance: balanceActual, operation: transaction.operation };
         return response;
     } catch (error) {
@@ -44,7 +45,8 @@ exports.retirement = async function(params) {
 
         const balanceActual = parseFloat(account.amount) - parseFloat(transaction.amount);
         let accountUpdated = await util.update({ amount: transaction.amount, operacion: transaction.operation }, params.account_id);
-
+        let token = await util.getToken();
+        let res = await util.log({ accountId: transaction.account_id, event: transaction.movement }, token);
         const response = { account_id: transaction.account_id, balance: balanceActual, operation: 1 };
         return response;
     } catch (error) {

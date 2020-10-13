@@ -1,13 +1,18 @@
 const { Router } = require('express');
 const router = Router();
+const util = require('../services/util');
 const transactionAPI = require('../controllers/transactionAPI');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const fetch = require('node-fetch');
 const { json } = require('body-parser');
 
 
-router.post('/deposit', transactionAPI.deposit);
-router.post('/retirement', transactionAPI.retirement);
+
+
+const ensureToken = util.validatedToken;
+router.get('/token', transactionAPI.getToken);
+router.post('/deposit', ensureToken, transactionAPI.deposit);
+router.post('/retirement', ensureToken, transactionAPI.retirement);
 router.get('/List/:account_id', transactionAPI.listTransaction);
 router.get('/LastTransaction/:account_id', transactionAPI.LastTransaction);
 router.get('/ListCourses', function(req, res) {
