@@ -14,18 +14,18 @@ router.get('/ListCourses', function(req, res) {
     let account = "http://192.168.99.100/api/courses";
     var balance = JSON.parse(get(account, "GET"));
     var objecto = JSON.stringify(balance)
-    res.render('index', { data: objecto });
-
+    console.log(objecto);
 })
 router.get('/registrarMatricula', function(req, res) {
     res.render('resgister');
 })
-router.post('/registrarmatricula', async function(req, res) {
+router.post('/registrar', async function(req, res) {
+
     var param = {
         curso: req.body.curso,
         alumno: req.body.alumno,
     }
-    console.log(req.body.curso);
+
     const rawResponse = await fetch('http://192.168.99.100/api/matricula/register', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
